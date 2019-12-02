@@ -19,15 +19,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class GameController extends AbstractController
 {
+
+    /** @var Runner */
+    private $gameRunner;
+
+    public function __construct(Runner $gameRunner)
+    {
+        $this->gameRunner = $gameRunner;
+    }
+
     /**
      * @Route("/", name="game_home", methods="GET")
      */
     public function home(): Response
     {
-    	$gameRunner = $this->createGameRunner();
 
         return $this->render('game/home.html.twig', [
-            'game' => $gameRunner->loadGame()
+            'game' => $this->gameRunner->loadGame()
         ]);
     }
 
@@ -36,11 +44,10 @@ class GameController extends AbstractController
      */
     public function won(): Response
     {
-    	$gameRunner = $this->createGameRunner();
-        $game       = $gameRunner->loadGame();
+        $game       = $this->gameRunner->loadGame();
 
         try {
-            $gameRunner->resetGameOnSuccess();
+            $this->gameRunner->resetGameOnSuccess();
         } catch (LogicException $e) {
             throw $this->createAccessDeniedException($e->getMessage(), $e);
         }
@@ -55,11 +62,10 @@ class GameController extends AbstractController
      */
     public function failed(): Response
     {
-    	$gameRunner = $this->createGameRunner();
-        $game       = $gameRunner->loadGame();
+        $game       = $this->gameRunner->loadGame();
 
         try {
-            $gameRunner->resetGameOnFailure();
+            $this->gameRunner->resetGameOnFailure();
         } catch (LogicException $e) {
             throw $this->createAccessDeniedException($e->getMessage(), $e);
         }
@@ -74,8 +80,7 @@ class GameController extends AbstractController
      */
     public function reset(): RedirectResponse
     {
-    	$gameRunner = $this->createGameRunner();
-        $gameRunner->resetGame();
+        $this->gameRunner->resetGame();
 
         return $this->redirectToRoute('game_home');
     }
@@ -89,8 +94,7 @@ class GameController extends AbstractController
      */
     public function playLetter(string $letter): RedirectResponse
     {
-    	$gameRunner = $this->createGameRunner();
-        $game       = $gameRunner->playLetter($letter);
+        $game       = $this->gameRunner->playLetter($letter);
 
         if ($game->isOver()) {
             return $this->redirectToRoute($game->isWon() ? 'game_won' : 'game_failed');
@@ -106,21 +110,8 @@ class GameController extends AbstractController
      */
     public function playWord(Request $request): RedirectResponse
     {
-    	$gameRunner = $this->createGameRunner();
-        $game       = $gameRunner->playWord($request->request->get('word'));
+        $game       = $this->gameRunner->playWord($request->request->get('word'));
 
         return $this->redirectToRoute($game->isWon() ? 'game_won' : 'game_failed');
-    }
-
-    private function createGameRunner()
-    {
-    	$wordList = new WordList($this->getParameter('app.dictionaries'));
-    	$wordList->addLoader(new TextFileLoader());
-    	$wordList->addLoader(new XmlFileLoader());
-    	$wordList->addWord('customer');
-    	$wordList->addWord('lemonade');
-    	$wordList->addWord('employee');
-
-    	return new Runner(new Storage($this->get('session')), $wordList);
     }
 }

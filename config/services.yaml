@@ -24,3 +24,13 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\Game\WordList:
+        arguments:
+            $dictionaries: '%app.dictionaries%'
+        calls:
+            - [addLoader, ['@App\Game\Loader\TextFileLoader']]
+            - [addLoader, ['@App\Game\Loader\XmlFileLoader']]
+            - [addWord, [customer]]
+            - [addWord, [lemonade]]
+            - [addWord, [employee]]
