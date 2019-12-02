@@ -121,6 +121,7 @@ class Kernel extends BaseKernel implements CompilerPassInterface, ExtensionInter
 
         $container->setParameter('hangman.game.dictionaries', $config['game']['dictionaries']);
         $container->setParameter('hangman.game.default_credits', $config['game']['default_credits']);
+        $container->setParameter('hangman.game.required_age', $config['game']['required_age']);
     }
 
     /**
@@ -182,6 +183,11 @@ class Kernel extends BaseKernel implements CompilerPassInterface, ExtensionInter
                 ->defaultValue(10)
                 ->min(5)
                 ->max(15)
+            ->end() // integerNode
+            ->integerNode('required_age')
+                ->defaultValue(10)
+                ->min(16)
+                ->max(23)
             ->end() // integerNode
         ->end() // end game
         ;

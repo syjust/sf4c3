@@ -34,7 +34,7 @@ services:
 
     App\Game\WordList:
         arguments:
-            $dictionaries: '%hangman.app.dictionaries%'
+            $dictionaries: '%hangman.game.dictionaries%'
         calls:
             - [addWord, [customer]]
             - [addWord, [lemonade]]
