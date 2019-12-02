@@ -1,9 +1,6 @@
 parameters:
     locale: 'en'
     app.allowed_locales_pattern: 'en|de|fr'
-    app.dictionaries:
-        - '%kernel.project_dir%/data/words.txt'
-        - '%kernel.project_dir%/data/words.xml'
     app.mail_recipient: 'training@sensiolabs.com'
 
 hangman:
@@ -37,7 +34,7 @@ services:
 
     App\Game\WordList:
         arguments:
-            $dictionaries: '%app.dictionaries%'
+            $dictionaries: '%hangman.app.dictionaries%'
         calls:
             - [addWord, [customer]]
             - [addWord, [lemonade]]

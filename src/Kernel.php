@@ -116,10 +116,11 @@ class Kernel extends BaseKernel implements CompilerPassInterface, ExtensionInter
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        dump($configs);
         $processor = new Processor();
         $config  = $processor->processConfiguration($this, $configs);
-        dump($config);
+
+        $container->setParameter('hangman.game.dictionaries', $config['game']['dictionaries']);
+        $container->setParameter('hangman.game.default_credits', $config['game']['default_credits']);
     }
 
     /**
