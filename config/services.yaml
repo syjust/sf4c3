@@ -7,6 +7,12 @@ parameters:
     app.mail_recipient: 'training@sensiolabs.com'
 
 services:
+    # _instanceof:
+    #     App\Game\Loader\LoaderInterface:
+    #         tags:
+    #             name : hangman.loader
+    #             #name : !php/const App\Kernel::HANGMAN_LOADER_TAG
+    #             foo  : bar
     # default configuration only applies for services in *this* file
     _defaults:
         autowire: true
@@ -29,8 +35,6 @@ services:
         arguments:
             $dictionaries: '%app.dictionaries%'
         calls:
-            - [addLoader, ['@App\Game\Loader\TextFileLoader']]
-            - [addLoader, ['@App\Game\Loader\XmlFileLoader']]
             - [addWord, [customer]]
             - [addWord, [lemonade]]
             - [addWord, [employee]]
