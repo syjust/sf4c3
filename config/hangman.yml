@@ -1,0 +1,6 @@
+hangman:
+   game:
+      dictionaries:
+          - '%kernel.project_dir%/data/words.txt'
+          - '%kernel.project_dir%/data/words.xml'
+      default_credits: 12

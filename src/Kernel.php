@@ -4,14 +4,18 @@ namespace App;
 
 use App\Game\WordList;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
-class Kernel extends BaseKernel implements CompilerPassInterface
+class Kernel extends BaseKernel implements CompilerPassInterface, ExtensionInterface, ConfigurationInterface
 {
     use MicroKernelTrait;
 
@@ -47,6 +51,7 @@ class Kernel extends BaseKernel implements CompilerPassInterface
         if (is_dir($confDir.'/packages/'.$this->environment)) {
             $loader->load($confDir.'/packages/'.$this->environment.'/**/*'.self::CONFIG_EXTS, 'glob');
         }
+        $loader->load($confDir.'/hangman'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/services'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/services_'.$this->environment.self::CONFIG_EXTS, 'glob');
     }
@@ -97,5 +102,89 @@ class Kernel extends BaseKernel implements CompilerPassInterface
         $container
             ->registerForAutoconfiguration(Game\Loader\LoaderInterface::class)
             ->addTag(self::HANGMAN_LOADER_TAG, ['foo' => 'bar']);
+        /*
+         * auto register as extension
+         */
+        $container->registerExtension($this);
+    }
+
+    /**
+     * Loads a specific configuration.
+     *
+     * @param array            $configs
+     * @param ContainerBuilder $container
+     */
+    public function load(array $configs, ContainerBuilder $container)
+    {
+        dump($configs);
+        $processor = new Processor();
+        $config  = $processor->processConfiguration($this, $configs);
+        dump($config);
+    }
+
+    /**
+     * Returns the namespace to be used for this extension (XML namespace).
+     *
+     * @return string The XML namespace
+     */
+    public function getNamespace()
+    {
+        return '';
+    }
+
+    /**
+     * Returns the base path for the XSD files.
+     *
+     * @return string|false
+     */
+    public function getXsdValidationBasePath()
+    {
+        return false;
+    }
+
+    /**
+     * Returns the recommended alias to use in XML.
+     *
+     * This alias is also the mandatory prefix to use when using YAML.
+     *
+     * @return string The alias
+     */
+    public function getAlias()
+    {
+        return 'hangman';
+    }
+
+    /**
+     * Generates the configuration tree builder.
+     * - validate
+     * - parse
+     * - merge
+     *
+     * @return TreeBuilder The tree builder
+     */
+    public function getConfigTreeBuilder()
+    {
+        $tree = new TreeBuilder($this->getAlias());
+        $game = $tree->getRootNode()->children()->arrayNode('game');
+        $game->children()
+            ->arrayNode('dictionaries')
+                ->isRequired()
+                ->prototype('scalar')
+                    ->isRequired()
+                    ->validate()
+                        ->ifTrue(function ($value) { return !\is_readable($value); })
+                        ->thenInvalid('file must exist')
+                    ->end() // end validate
+                ->end() // end prototype
+            ->end() // arrayNode dictionaries
+            ->integerNode('default_credits')
+                ->defaultValue(10)
+                ->min(5)
+                ->max(15)
+            ->end() // integerNode
+        ->end() // end game
+        ;
+
+        return $tree;
     }
 }

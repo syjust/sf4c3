@@ -6,6 +6,10 @@ parameters:
         - '%kernel.project_dir%/data/words.xml'
     app.mail_recipient: 'training@sensiolabs.com'
 
+hangman:
+    game:
+        default_credits: 15
+
 services:
     # _instanceof:
     #     App\Game\Loader\LoaderInterface:
