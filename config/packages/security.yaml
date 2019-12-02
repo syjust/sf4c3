@@ -1,9 +1,24 @@
 security:
+    encoders:
+        App\Entity\Player: auto
+
     providers:
-        mem:
-            memory: ~
+        players:
+            entity:
+                class: App\Entity\Player
+                property: username
 
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        hangman:
+            pattern: '^/'
+            provider: players
+            anonymous: true
+            form_login:
+                login_path: login
+                check_path: login-check
+            logout:
+                path: logout
+                target: homepage

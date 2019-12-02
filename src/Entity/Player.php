@@ -46,7 +46,7 @@ class Player implements UserInterface
     /**
      * @ORM\Column(type="integer", options={"default"="10"})
      */
-    private $credits;
+    private $credits = 10;
 
     public function getUsername(): string
     {
