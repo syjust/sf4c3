@@ -1,0 +1,6 @@
+{% macro breadcrumb(items) %}
+    {% for label, route in items %}
+        <a href="{{ path(route) }}">{{ ('breadcrumb.' ~ label)|trans }}</a>{% if not loop.last %} > {% endif %}
+    {% endfor %}
+    <hr />
+{% endmacro %}

@@ -1,0 +1,8 @@
+<div id="testimonials">
+    <h2>{{ 'game.testimonials'|trans }}</h2>
+    <ul>
+        {% for name, testimonial in testimonials %}
+            <li><strong>{{ name }}</strong> "{{ testimonial }}"</li>
+        {% endfor %}
+    </ul>
+</div>

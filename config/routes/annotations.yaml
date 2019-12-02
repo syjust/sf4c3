@@ -1,0 +1,5 @@
+controllers:
+    resource: ../src/Controller/
+    prefix: '/{_locale}'
+    requirements:
+        _locale: '%app.allowed_locales_pattern%'

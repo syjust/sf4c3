@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% import '_macro.html.twig' as utils %}
+
+{% block content_id 'game' %}
+
+{% block content %}
+    {{ utils.breadcrumb({'home': 'game_home'}) }}
+
+    <h2>{{ 'game.title'|trans }}</h2>
+
+    <p class="attempts">
+        {{ 'game.attempts'|trans({'%count%':game.remainingAttempts}) }}
+    </p>
+
+    <ul class="word-letters">
+        {% for letter in game.wordLetters %}
+            <li class="{{ game.isLetterFound(letter) ? 'guessed' : 'not-guessed' }}">
+                {{- game.isLetterFound(letter) ? letter|upper : '?' -}}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p class="attempts">
+        <a href="{{ path('game_reset') }}">{{ 'game.reset'|trans }}</a>
+    </p>
+
+    <br class="clearfix" />
+
+    <h2>{{ 'game.try_letter'|trans }}</h2>
+
+    <ul>
+        {% for letter in 'A'..'Z' %}
+            <li class="letter btn">
+                <a href="{{ path('game_play_letter', {'letter' : letter}) }}">
+                    {{ letter|upper }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>{{ 'game.try_word'|trans }}</h2>
+
+    <form action="{{ path('game_play_word') }}" method="post" class="form-inline">
+        <div class="form-group">
+            <input name="word" class="form-control mb-2" placeholder="{{ 'game.form.word'|trans }}"/>
+        </div>
+        <button>{{ 'game.form.submit'|trans }}</button>
+    </form>
+{% endblock %}

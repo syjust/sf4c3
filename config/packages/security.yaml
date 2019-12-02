@@ -1,0 +1,9 @@
+security:
+    providers:
+        mem:
+            memory: ~
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title 'Hangman Game' %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        <div class="container">
+            <header class="row">
+                <div class="col-md-4">
+                    <div id="logo">
+                        <h1>
+                            <a href="{{ path('homepage') }}">Hangman</a>
+                        </h1>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <ul class="text-right">
+                        {{ i18n_links(['fr', 'en', 'de'], app.request.attributes.get('_route')) }}
+                    </ul>
+
+                    {{ include('_menu.html.twig') }}
+
+                </div>
+            </header>
+            <div class="row">
+                <div class="col-md-8">
+                    <div id="{% block content_id 'content' %}" class="box">
+                        {{ include('_flashes.html.twig') }}
+                        {% block content %}{% endblock %}
+                    </div>
+                    <div class="box">
+                        {{ render(controller('App\\Controller\\LayoutController::testimonials')) }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div id="sidebar">
+                        <div class="box">
+                            <h3>{{ 'sidebar.last_games'|trans }}</h3>
+                            <div class="date-list">
+                                <ul class="list date-list">
+
+                                    <li class="first"><span class="date">Jan 13</span> <a href="#">Ultrices quisque molestie</a></li>
+                                    <li><span class="date">Jan 7</span> <a href="#">Neque dolor eget</a></li>
+                                    <li><span class="date">Jan 1</span> <a href="#">Sollicitudin interdum</a></li>
+                                    <li class="last"><span class="date">Dec 26</span> <a href="#">Varius dignissim</a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="box">
+                            <h3>{{ 'sidebar.last_players'|trans }}</h3>
+                            <ul>
+                                <li>user 1</li>
+                                <li>user 2</li>
+                                <li>user 3</li>
+                                <li>user 4</li>
+                                <li>user 5</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

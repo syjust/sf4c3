@@ -1,0 +1,26 @@
+parameters:
+    locale: 'en'
+    app.allowed_locales_pattern: 'en|de|fr'
+    app.dictionaries:
+        - '%kernel.project_dir%/data/words.txt'
+        - '%kernel.project_dir%/data/words.xml'
+    app.mail_recipient: 'training@sensiolabs.com'
+
+services:
+    # default configuration only applies for services in *this* file
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        bind:
+            # these are the scalar arguments used by service constructors. Instead of defining
+            # the 'arguments' option for each service, you can define all once in this file
+            $recipient: '%app.mail_recipient%'
+
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{Entity,Migrations,Tests,Game/Exception,Kernel.php}'
+
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
