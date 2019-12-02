@@ -19,6 +19,7 @@ security:
             form_login:
                 login_path: login
                 check_path: login-check
+                success_handler: App\Security\HangmanSuccessAuthenticationHandler
             logout:
                 path: logout
                 target: homepage

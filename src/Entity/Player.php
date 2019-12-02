@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -48,6 +49,11 @@ class Player implements UserInterface
      */
     private $credits = 10;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastLogin;
+
     public function getUsername(): string
     {
         return $this->username;
@@ -87,7 +93,7 @@ class Player implements UserInterface
         return $this->dateOfBirth;
     }
 
-    public function setDateOfBirth(\DateTimeInterface $dateOfBirth) : void
+    public function setDateOfBirth(DateTimeInterface $dateOfBirth) : void
     {
         $this->dateOfBirth = $dateOfBirth;
     }
@@ -125,5 +131,22 @@ class Player implements UserInterface
         $this->credits = $credits;
 
         return $this;
+    }
+
+    public function getLastLogin(): ?DateTimeInterface
+    {
+        return $this->lastLogin;
+    }
+
+    public function setLastLogin(?DateTimeInterface $lastLogin): self
+    {
+        $this->lastLogin = $lastLogin;
+
+        return $this;
+    }
+
+    public function recordLastLogin(): void
+    {
+        $this->lastLogin = new \DateTime('now');
     }
 }
