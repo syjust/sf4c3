@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Game\Exception\LogicException;
 use App\Game\Runner;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/game")
+ * @IsGranted("ROLE_PLAYER")
  */
 class GameController extends AbstractController
 {
