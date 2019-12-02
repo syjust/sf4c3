@@ -39,3 +39,7 @@ services:
             - [addWord, [customer]]
             - [addWord, [lemonade]]
             - [addWord, [employee]]
+
+    # App\Security\Voter\LegalAgeVoter:
+    #     arguments:
+    #         $legalAge: '%hangman.game.required_age%'

@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Game\WordList;
+use App\Security\Voter\LegalAgeVoter;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -88,6 +89,12 @@ class Kernel extends BaseKernel implements CompilerPassInterface, ExtensionInter
             $ref = new Reference($id);
             $wordList->addMethodCall('addLoader', [$ref]);
         }
+
+        # App\Security\Voter\LegalAgeVoter:
+        #     arguments:
+        #         $legalAge: '%hangman.game.required_age%'
+        $voter = $container->getDefinition(LegalAgeVoter::class);
+        $voter->setArgument(0, $container->getParameter('hangman.game.required_age'));
     }
 
     protected function build(ContainerBuilder $container)

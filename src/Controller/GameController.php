@@ -14,10 +14,12 @@ use App\Game\Loader\TextFileLoader;
 use App\Game\Loader\XmlFileLoader;
 use App\Game\Storage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @Route("/game")
  * @IsGranted("ROLE_PLAYER")
+ * IsGranted("HAS_LEGAL_AGE")
  */
 class GameController extends AbstractController
 {
@@ -25,9 +27,14 @@ class GameController extends AbstractController
     /** @var Runner */
     private $gameRunner;
 
-    public function __construct(Runner $gameRunner)
+    public function __construct(Runner $gameRunner, Security $security)
     {
         $this->gameRunner = $gameRunner;
+        if (!$security->isGranted('HAS_LEGAL_AGE')) {
+            throw $this->createAccessDeniedException('bad age !');
+        }
+        // only for a method because setContainer is not already set
+        //$this->denyAccessUnlessGranted('HAS_LEGAL_AGE');
     }
 
     /**
