@@ -43,6 +43,11 @@ class Player implements UserInterface
      */
     private $password = '';
 
+    /**
+     * @ORM\Column(type="integer", options={"default"="10"})
+     */
+    private $credits;
+
     public function getUsername(): string
     {
         return $this->username;
@@ -108,5 +113,17 @@ class Player implements UserInterface
 
     public function eraseCredentials(): void
     {
+    }
+
+    public function getCredits(): ?int
+    {
+        return $this->credits;
+    }
+
+    public function setCredits(int $credits): self
+    {
+        $this->credits = $credits;
+
+        return $this;
     }
 }
