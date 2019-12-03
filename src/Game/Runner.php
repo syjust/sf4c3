@@ -2,17 +2,22 @@
 
 namespace App\Game;
 
+use App\Game\Event\GameEndEvent;
+use App\Game\Event\GameStartEvent;
 use App\Game\Exception\LogicException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Runner
 {
     private $storage;
     private $wordList;
+    private $dispatcher;
 
-    public function __construct(Storage $storage, WordList $wordList)
+    public function __construct(Storage $storage, WordList $wordList, EventDispatcherInterface $dispatcher)
     {
-        $this->storage  = $storage;
-        $this->wordList = $wordList;
+        $this->storage    = $storage;
+        $this->wordList   = $wordList;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -59,9 +64,13 @@ class Runner
         $this->storage->reset();
     }
 
+    /**
+     * @throws LogicException
+     */
     public function resetGameOnSuccess(): void
     {
         $game = $this->storage->loadGame();
+        $this->dispatcher->dispatch(new GameEndEvent($game));
 
         if (!$game->isOver()) {
             throw new LogicException('Current game is not yet over.');
@@ -74,9 +83,13 @@ class Runner
         $this->resetGame();
     }
 
+    /**
+     * @throws LogicException
+     */
     public function resetGameOnFailure(): void
     {
         $game = $this->storage->loadGame();
+        $this->dispatcher->dispatch(new GameEndEvent($game));
 
         if (!$game->isOver()) {
             throw new LogicException('Current game is not yet over.');
@@ -94,6 +107,7 @@ class Runner
         $word = $this->wordList->getRandomWord();
         $game = $this->storage->newGame($word);
         $this->storage->save($game);
+        $this->dispatcher->dispatch(new GameStartEvent($game));
 
         return $game;
     }
