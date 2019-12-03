@@ -1,0 +1,10 @@
+services:
+    App\DataCollector\GameDataCollector:
+        # should be autowired (bug with data collector ?)
+        arguments:
+            $gameStorage: '@App\Game\Storage'
+        tags:
+            0:
+                name: data_collector
+                id: hangman
+                template: collector/hangman.html.twig

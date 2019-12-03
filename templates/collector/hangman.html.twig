@@ -1,0 +1,60 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        {# this is the content displayed as a panel in the toolbar #}
+        <img width="24" height="24" src="/Hangman-Game-grey.Png" alt="hangman"/>
+        <span class="sf-toolbar-value">{{ collector.name }}</span>
+    {% endset %}
+
+    {% set text %}
+        {# this is the content displayed when hovering the mouse over
+           the toolbar panel #}
+        {% if collector.data %}
+        <div class="sf-toolbar-info-piece">
+            <b>Attempts</b>
+            <span>{{ collector.data.attempts }}</span>
+        </div>
+
+        <div class="sf-toolbar-info-piece">
+            <b>Word</b>
+            <span>{{ collector.data.word }}</span>
+        </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Tried letters</b>
+                <span>{{ collector.data.triedLetters|join(', ') }}</span>
+            </div>
+        {% endif %}
+    {% endset %}
+
+    {# the 'link' value set to 'false' means that this panel doesn't
+       show a section in the web profiler #}
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig') }}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    {# Optional. Here you can link to or define your own CSS and JS contents. #}
+    {# Use {{ parent() }} to extend the default styles instead of overriding them. #}
+{% endblock %}
+
+{% block menu %}
+    {# This left-hand menu appears when using the full-screen profiler. #}
+    <span class="label">
+        <span class="icon">
+            <img width="24" height="24" src="/Hangman-Game-grey.Png" alt="hangman"/>
+        </span>
+        <strong>{{ collector.name }}</strong>
+    </span>
+{% endblock %}
+
+
+{% block panel %}
+    {# Optional, for showing the most details. #}
+    {% if collector.data %}
+        {{ dump(collector.data) }}
+    {% else %}
+        <span>no data</span>
+    {% endif %}
+
+{% endblock %}
