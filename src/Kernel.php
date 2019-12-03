@@ -55,6 +55,9 @@ class Kernel extends BaseKernel implements CompilerPassInterface, ExtensionInter
         $loader->load($confDir.'/hangman'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/services'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/services_'.$this->environment.self::CONFIG_EXTS, 'glob');
+        if (is_dir($confDir.'/custom/')) {
+            $loader->load($confDir.'/custom/**/*'.self::CONFIG_EXTS, 'glob');
+        }
     }
 
     protected function configureRoutes(RouteCollectionBuilder $routes)

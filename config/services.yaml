@@ -43,3 +43,6 @@ services:
     # App\Security\Voter\LegalAgeVoter:
     #     arguments:
     #         $legalAge: '%hangman.game.required_age%'
+
+    App\Game\Listener\GameLogListener:
+        $logger: '@monolog.logger.game'
