@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\Security;
 /**
  * @Route("/game")
  * @IsGranted("ROLE_PLAYER")
+ * @IsGranted("HAS_ENOUGH_CREDITS")
  * IsGranted("HAS_LEGAL_AGE")
  */
 class GameController extends AbstractController
