@@ -3,6 +3,7 @@ services:
         # should be autoWired (bug with data collector ?)
         arguments:
             $gameStorage: '@App\Game\Storage'
+            $tokenStorage: '@security.token_storage'
         tags:
             -
                 name: data_collector

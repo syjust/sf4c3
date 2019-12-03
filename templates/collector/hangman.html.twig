@@ -10,20 +10,26 @@
     {% set text %}
         {# this is the content displayed when hovering the mouse over
            the toolbar panel #}
-        {% if collector.data %}
+        {% if collector.data.game %}
         <div class="sf-toolbar-info-piece">
             <b>Attempts</b>
-            <span>{{ collector.data.attempts }}</span>
+            <span>{{ collector.data.game.attempts }}</span>
         </div>
 
         <div class="sf-toolbar-info-piece">
             <b>Word</b>
-            <span>{{ collector.data.word }}</span>
+            <span>{{ collector.data.game.word }}</span>
         </div>
             <div class="sf-toolbar-info-piece">
                 <b>Tried letters</b>
-                <span>{{ collector.data.triedLetters|join(', ') }}</span>
+                <span>{{ collector.data.game.triedLetters|join(', ') }}</span>
             </div>
+        {% endif %}
+        {% if collector.data.player %}
+        <div class="sf-toolbar-info-piece">
+            <b>player</b>
+            <span>{{ collector.data.player.username ~ '(' ~ collector.data.player.credits ~ ')' }}</span>
+        </div>
         {% endif %}
     {% endset %}
 
@@ -51,10 +57,15 @@
 
 {% block panel %}
     {# Optional, for showing the most details. #}
-    {% if collector.data %}
-        {{ dump(collector.data) }}
+    {% if collector.data.game %}
+        {{ dump(collector.data.game) }}
     {% else %}
-        <span>no data</span>
+        <span>*no game*</span>
+    {% endif %}
+    {% if collector.data.player %}
+        {{ dump(collector.data.player) }}
+    {% else %}
+        <span>*no player*</span>
     {% endif %}
 
 {% endblock %}

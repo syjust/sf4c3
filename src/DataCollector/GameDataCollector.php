@@ -3,7 +3,7 @@
 
 namespace App\DataCollector;
 
-use App\Game\Game;
+use App\Entity\Player;
 use App\Game\Storage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Throwable;
 
 /**
@@ -21,19 +22,27 @@ use Throwable;
  */
 class GameDataCollector extends DataCollector implements EventSubscriberInterface
 {
+    /**
+     *
+     */
     const HANGMAN_RESPONSE_HEADER = 'X-Hangman-Word';
 
     /** @var Storage */
     private $gameStorage;
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
 
     /**
      * GameDataCollector constructor.
      *
-     * @param $gameStorage
+     * @param Storage               $gameStorage
+     * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(Storage $gameStorage)
+    public function __construct(Storage $gameStorage, TokenStorageInterface $tokenStorage)
     {
-        $this->gameStorage = $gameStorage;
+        $this->gameStorage  = $gameStorage;
+        $this->tokenStorage = $tokenStorage;
+        $this->reset();
     }
 
     /**
@@ -45,20 +54,21 @@ class GameDataCollector extends DataCollector implements EventSubscriberInterfac
      */
     public function collect(Request $request, Response $response, Throwable $throwable = null)
     {
-        if (!$this->gameStorage->hasGame()) {
-            $this->data['hangman'] = null;
-
-            return;
+        if ($this->gameStorage->hasGame()) {
+            $this->data['game'] = $this->gameStorage->loadGame();
         }
-        $this->data['hangman'] = $this->gameStorage->loadGame();
+        $user = $this->tokenStorage->getToken()->getUser();
+        if ($user instanceof Player) {
+            $this->data['player'] = $user;
+        }
     }
 
     /**
-     * @return null|Game
+     * @return null|array
      */
-    public function getData(): ?Game
+    public function getData(): ?array
     {
-        return $this->data['hangman'];
+        return $this->data;
     }
 
     /**
@@ -94,6 +104,9 @@ class GameDataCollector extends DataCollector implements EventSubscriberInterfac
         return [KernelEvents::RESPONSE => 'onKernelResponse'];
     }
 
+    /**
+     * @param ResponseEvent $event
+     */
     public function onKernelResponse(ResponseEvent $event)
     {
         if ($this->gameStorage->hasGame()) {
@@ -109,6 +122,7 @@ class GameDataCollector extends DataCollector implements EventSubscriberInterfac
      */
     public function reset()
     {
-        $this->data['hangman'] = null;
+        $this->data['game']   = null;
+        $this->data['player'] = null;
     }
 }

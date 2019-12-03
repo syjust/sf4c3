@@ -21,6 +21,8 @@ class LegalAgeVoter extends Voter
 
     /**
      * LegalAgeVoter constructor.
+     *
+     * @param int $legalAge
      */
     public function __construct(int $legalAge)
     {
