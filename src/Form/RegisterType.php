@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Player;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -21,7 +21,7 @@ class RegisterType extends AbstractType
             ->add('username', TextType::class)
             ->add('fullname', TextType::class)
             ->add('email', EmailType::class)
-            ->add('dateOfBirth', DateType::class)
+            ->add('dateOfBirth', BirthdayType::class)
             ->add('password', RepeatedType::class, ['type' => PasswordType::class])
             ->add('register', SubmitType::class)
         ;
