@@ -25,7 +25,8 @@ class Registration
 
     public function register(Player $player)
     {
-        $player->setPassword($this->encoder->encodePassword($player, $player->getPassword()));
+        // this work is done by RegisterFormEventListener
+        //$player->setPassword($this->encoder->encodePassword($player, $player->getPassword()));
         $this->em->persist($player);
         $this->em->flush();
 

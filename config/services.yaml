@@ -51,7 +51,7 @@ services:
         $defaultCredits: '%hangman.game.default_credits%'
 
     # Use an other dispatcher than the one used by kernel
-    # TODO implement our tag & compilerPass because our Listener are autTagged & added in Symfony default dispatcher
+    # TODO implement our tag & compilerPass because our Listener are autoTagged & added in Symfony default dispatcher
     #hangman.game.dispatcher:
     #    class: Symfony\Component\EventDispatcher\EventDispatcher
     #App\Game\Runner:

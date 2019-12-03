@@ -57,9 +57,12 @@ class GameDataCollector extends DataCollector implements EventSubscriberInterfac
         if ($this->gameStorage->hasGame()) {
             $this->data['game'] = $this->gameStorage->loadGame();
         }
-        $user = $this->tokenStorage->getToken()->getUser();
-        if ($user instanceof Player) {
-            $this->data['player'] = $user;
+        $token = $this->tokenStorage->getToken();
+        if ($token) {
+            $user = $token->getUser();
+            if ($user instanceof Player) {
+                $this->data['player'] = $user;
+            }
         }
     }
 
