@@ -46,3 +46,6 @@ services:
 
     App\Game\Listener\GameLogListener:
         $logger: '@monolog.logger.game'
+
+    App\Game\Listener\GamePlayerCreditsListener:
+        $defaultCredits: '%hangman.game.default_credits%'

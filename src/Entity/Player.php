@@ -110,7 +110,7 @@ class Player implements UserInterface
 
     public function getRoles(): array
     {
-        return ['ROLE_PLAYER'];
+        return ['ROLE_ADMIN'];
     }
 
     public function getSalt(): void
@@ -148,5 +148,10 @@ class Player implements UserInterface
     public function recordLastLogin(): void
     {
         $this->lastLogin = new \DateTime('now');
+    }
+
+    public function consumeOneCredit() : void
+    {
+        $this->credits--;
     }
 }

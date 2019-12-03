@@ -23,3 +23,5 @@ security:
             logout:
                 path: logout
                 target: homepage
+    role_hierarchy:
+        ROLE_ADMIN: ['ROLE_PLAYER']
