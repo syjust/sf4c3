@@ -46,6 +46,6 @@ class CreditsVoter extends Voter
             return false;
         }
 
-        return $user->getCredits() > 0;
+        return $user->getCredits() > 0 || in_array('ROLE_ADMIN', $user->getRoles());
     }
 }

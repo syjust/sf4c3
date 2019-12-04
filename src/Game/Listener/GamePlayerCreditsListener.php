@@ -26,6 +26,7 @@ class GamePlayerCreditsListener implements EventSubscriberInterface
     private $storage;
     /** @var AuthorizationCheckerInterface */
     private $checker;
+    /** @var int */
     private $defaultCredits;
 
     /**
@@ -76,11 +77,24 @@ class GamePlayerCreditsListener implements EventSubscriberInterface
     }
 
     /**
+     * @return null|object|string
+     */
+    private function getUser()
+    {
+        $token = $this->storage->getToken();
+        if ($token) {
+            return $token->getUser();
+        }
+
+        return null;
+    }
+
+    /**
      * @param AbstractGameEvent $event
      */
     public function onGameEnd(AbstractGameEvent $event)
     {
-        $user = $this->storage->getToken()->getUser();
+        $user = $this->getUser();
         if ($user instanceof Player) {
             if ($user->getCredits() <= 0 && $this->checker->isGranted('ROLE_ADMIN')) {
                 $user->setCredits($this->defaultCredits);
@@ -94,7 +108,7 @@ class GamePlayerCreditsListener implements EventSubscriberInterface
      */
     public function onGameStart(AbstractGameEvent $event)
     {
-        $user = $this->storage->getToken()->getUser();
+        $user = $this->getUser();
         if ($user instanceof Player) {
             $user->consumeOneCredit();
             $this->em->flush();
