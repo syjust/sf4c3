@@ -15,6 +15,10 @@ services:
     #             #name : !php/const App\Kernel::HANGMAN_LOADER_TAG
     #             foo  : bar
     # default configuration only applies for services in *this* file
+    _instanceof:
+        App\Game\EventDispatcher\EventSubscriberInterface:
+            tags:
+                name: game.event_subscriber
     _defaults:
         autowire: true
         autoconfigure: true
@@ -51,8 +55,8 @@ services:
         $defaultCredits: '%hangman.game.default_credits%'
 
     # Use an other dispatcher than the one used by kernel
-    # TODO implement our tag & compilerPass because our Listener are autoTagged & added in Symfony default dispatcher
-    #hangman.game.dispatcher:
-    #    class: Symfony\Component\EventDispatcher\EventDispatcher
-    #App\Game\Runner:
-    #    $dispatcher: '@hangman.game.dispatcher'
+    # @see Kernel::addGameEventSubscribers() with game.event_subscriber
+    hangman.game.dispatcher:
+        class: Symfony\Component\EventDispatcher\EventDispatcher
+    App\Game\Runner:
+        $dispatcher: '@hangman.game.dispatcher'
