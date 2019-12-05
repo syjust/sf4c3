@@ -5,7 +5,9 @@ namespace App;
 use App\Extension\HangmanExtensionConfiguration;
 use App\Game\WordList;
 use App\Security\Voter\LegalAgeVoter;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\Config\Exception\LoaderLoadException;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -89,6 +91,12 @@ class Kernel extends BaseKernel implements CompilerPassInterface
         }
     }
 
+    /**
+     * @param ContainerBuilder $container
+     * @param LoaderInterface  $loader
+     *
+     * @throws Exception
+     */
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
     {
         $container->setParameter('container.autowiring.strict_mode', true);
@@ -106,6 +114,11 @@ class Kernel extends BaseKernel implements CompilerPassInterface
         }
     }
 
+    /**
+     * @param RouteCollectionBuilder $routes
+     *
+     * @throws LoaderLoadException
+     */
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
         $confDir = $this->getProjectDir().'/config';
