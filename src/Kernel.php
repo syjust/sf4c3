@@ -33,6 +33,55 @@ class Kernel extends BaseKernel implements CompilerPassInterface, ExtensionInter
         return $this->getProjectDir().'/var/log';
     }
 
+    /**
+     * @param ContainerBuilder $container
+     */
+    protected function addGameEventSubscribers(ContainerBuilder $container)
+    {
+        //dump((new Exception())->getTrace());
+        if (!$container->has('hangman.game.dispatcher')) {
+
+            return;
+        }
+
+        $dispatcher = $container->getDefinition('hangman.game.dispatcher');
+        $ids      = $container->findTaggedServiceIds('game.event_subscriber');
+        foreach ($ids as $id => $attribs) {
+            $ref = new Reference($id);
+            $dispatcher->addMethodCall('addSubscriber', [$ref]);
+        }
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    protected function addWordListLoaders(ContainerBuilder $container): void
+    {
+        if (!$container->has(WordList::class)) {
+
+            return;
+        }
+
+        $wordList = $container->getDefinition(WordList::class);
+        $ids      = $container->findTaggedServiceIds(self::HANGMAN_LOADER_TAG);
+        /*
+         * App\Game\WordList:
+         *     calls:
+         *         - [addLoader, ['@App\Game\Loader\TextFileLoader']]
+         *         - [addLoader, ['@App\Game\Loader\XmlFileLoader']]
+         */
+        foreach ($ids as $id => $attribs) {
+            $ref = new Reference($id);
+            $wordList->addMethodCall('addLoader', [$ref]);
+        }
+
+        # App\Security\Voter\LegalAgeVoter:
+        #     arguments:
+        #         $legalAge: '%hangman.game.required_age%'
+        $voter = $container->getDefinition(LegalAgeVoter::class);
+        $voter->setArgument(0, $container->getParameter('hangman.game.required_age'));
+    }
+
     public function registerBundles()
     {
         $contents = require $this->getProjectDir().'/config/bundles.php';
@@ -79,25 +128,8 @@ class Kernel extends BaseKernel implements CompilerPassInterface, ExtensionInter
      */
     public function process(ContainerBuilder $container)
     {
-        if(!$container->has(WordList::class)) { return; }
-        $wordList = $container->getDefinition(WordList::class);
-        $ids = $container->findTaggedServiceIds(self::HANGMAN_LOADER_TAG);
-        /*
-         * App\Game\WordList:
-         *     calls:
-         *         - [addLoader, ['@App\Game\Loader\TextFileLoader']]
-         *         - [addLoader, ['@App\Game\Loader\XmlFileLoader']]
-         */
-        foreach ($ids as $id => $attribs) {
-            $ref = new Reference($id);
-            $wordList->addMethodCall('addLoader', [$ref]);
-        }
-
-        # App\Security\Voter\LegalAgeVoter:
-        #     arguments:
-        #         $legalAge: '%hangman.game.required_age%'
-        $voter = $container->getDefinition(LegalAgeVoter::class);
-        $voter->setArgument(0, $container->getParameter('hangman.game.required_age'));
+        $this->addWordListLoaders($container);
+        $this->addGameEventSubscribers($container);
     }
 
     protected function build(ContainerBuilder $container)

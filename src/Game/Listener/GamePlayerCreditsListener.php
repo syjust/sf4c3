@@ -8,7 +8,7 @@ use App\Game\Event\AbstractGameEvent;
 use App\Game\Event\GameEndEvent;
 use App\Game\Event\GameStartEvent;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use App\Game\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 

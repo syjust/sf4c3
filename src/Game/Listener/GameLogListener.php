@@ -7,7 +7,7 @@ use App\Game\Event\AbstractGameEvent;
 use App\Game\Event\GameEndEvent;
 use App\Game\Event\GameStartEvent;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use App\Game\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class GameLogListener
